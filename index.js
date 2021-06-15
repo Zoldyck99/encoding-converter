@@ -12,6 +12,10 @@ app.listen(process.env.PORT || 8000, ()=>{
     console.log("Server is alive");
 })
 
+app.get("*", (req, res) => {
+  res.sendFile(index.html)
+})
+
 app.post('/upload', function(req, res) {
   // The name of the input field (i.e. "uploadedFiles") is used to retrieve the uploaded file
   let uploadedFiles = req.files.uploadedFiles;    
