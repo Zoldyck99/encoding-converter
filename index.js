@@ -7,13 +7,10 @@ const fileUpload = require('express-fileupload');
 
 const app = express();
 app.use(fileUpload());  // default options
-
-app.listen(process.env.PORT || 8000, ()=>{
-    console.log("Server is alive");
-})
+app.use(express.static(__dirname))
 
 app.get("*", (req, res) => {
-  res.sendFile(index.html)
+  res.sendFile(__dirname+ "/index.html")
 })
 
 app.post('/upload', function(req, res) {
@@ -98,3 +95,7 @@ app.post('/upload', function(req, res) {
   }
 
 });
+
+app.listen(process.env.PORT, ()=>{
+  console.log("Server is alive");
+})
