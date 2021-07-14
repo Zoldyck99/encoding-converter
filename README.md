@@ -1,4 +1,13 @@
 # encoding-converter
-Convert at once as many files as you want from (UTF-8 with BOM) to (UTF-8)
+Convert at once as many files encoding as you want.
 
-Available at: https://encoding-converter.herokuapp.com/
+Can be used on a Single file - Many files - .zip file
+
+# Use it in this order:
+1- Specify the encodings
+
+2- Upload target files
+
+=> result will download automatically
+
+Available at: https://encoding-converter.netlify.app/
