@@ -167,14 +167,18 @@ const convertFile = async (from, to, file) => {
  * used to get filesRecord Array from the temp dir, to be used for encoding process
  */
 const getFilesRecord = async (tempPath) => {
-  var filesRecord = []
-  return await fs.promises.readdir(tempPath)
-  .then(files => {
-    files.forEach(file => {
-      filesRecord.push(path.join(tempPath, file))
-    });
-    return filesRecord
-  })
+  try {
+    var filesRecord = []
+    return await fs.promises.readdir(tempPath)
+    .then(files => {
+      files.forEach(file => {
+        filesRecord.push(path.join(tempPath, file))
+      });
+      return filesRecord
+    })  
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 /**
@@ -192,9 +196,15 @@ const encode = async (files, from, to, BOM, node_to) => {
         if (err) {
           throw err
         }
-        txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
-        txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
-        write(file, txt, node_to) //write to the file
+
+        try {
+          txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
+          txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
+          write(file, txt, node_to) //write to the file
+  
+        } catch (err) {
+          console.error(err);
+        }
       })      
     });
   }else{ // single file
@@ -202,9 +212,15 @@ const encode = async (files, from, to, BOM, node_to) => {
       if (err) {
         throw err
       }
-      txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
-      txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
-      write(files, txt, node_to) //write to the file
+
+      try {
+        txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
+        txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
+        write(files, txt, node_to) //write to the file
+  
+      } catch (err) {
+        console.error(`${err}`)
+      }
     })
   }
 }
@@ -224,10 +240,19 @@ const encodeUnkFrom = async (filesRecord, to, BOM, node_to) => {
           console.error(`${err}`)
           throw err
         }
-        from = checkEncoding(data)
-        txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
-        txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
-        write(file, txt, node_to) //write to the file
+
+        try {
+          from = checkEncoding(data)
+          if(!iconv.encodingExists(from)){
+            from = 'utf8'
+          }
+          txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
+          txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
+          write(file, txt, node_to) //write to the file
+          
+        } catch (err) {
+          console.error(err);
+        }
       })      
     });
   }else{  // single file
@@ -235,10 +260,18 @@ const encodeUnkFrom = async (filesRecord, to, BOM, node_to) => {
       if (err) {
         throw err
       }
-      from = checkEncoding(data)
-      txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
-      txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
-      write(filesRecord, txt, node_to) //write to the file
+
+      try {
+        from = checkEncoding(data)
+        if(!iconv.encodingExists(from)){
+          from = 'utf8'
+        }
+        txt = iconv.decode(data, from, {stripBOM: true}) // decode data buffer
+        txt = iconv.encode(txt, to, {addBOM: BOM})  //encode txt string
+        write(filesRecord, txt, node_to) //write to the file        
+      } catch (err) {
+        console.error(err);
+      }
     })      
   }  
 }
@@ -250,11 +283,15 @@ const encodeUnkFrom = async (filesRecord, to, BOM, node_to) => {
  * @param  {String} to encoding to save with
  */
 const write = (path, data, to) => {
-  fs.writeFile(path, data, {encoding: to}, (err) => {
-    if(err){
-      console.err(err)
-    }
-  })
+  try {
+    fs.writeFile(path, data, {encoding: to}, (err) => {
+      if(err){
+        console.err(err)
+      }
+    })    
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 

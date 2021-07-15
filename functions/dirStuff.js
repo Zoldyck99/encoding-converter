@@ -14,7 +14,7 @@ const uploadFiles = async (tempFolderPath, uploadField, wait) => {
         uploadPath = path.join(tempFolderPath, file.name)
         file.mv(uploadPath, err => {
             if (err){
-                throw err;
+                console.error(err);
             }
         })
         filesRecord.push(uploadPath)  // add a file name
@@ -31,7 +31,7 @@ const uploadFiles = async (tempFolderPath, uploadField, wait) => {
 const uploadFile = async (uploadPath, file, wait) => {
     await file.mv(uploadPath, function(err) {
         if (err){
-          console.error(`${err}`)
+            console.error(err);
         }
     });
     await new Promise(resolve => setTimeout(resolve, wait));
@@ -46,7 +46,7 @@ const createTempFolder = async () => {
     let tempPath = path.join('uploads', tempName)  // temp folder path
     fs.mkdir(tempPath, (err) => {
         if (err) {
-            throw err;
+            console.error(err);
         }
         console.log('Directory created');
     })
@@ -61,7 +61,9 @@ const deleteEverything = async (dirPath, zipPath) => {
     try {
         const deleteDir = del(dirPath)
         const deleteZip = fs.unlink(zipPath, (err) => {
-            if (err) throw err;
+            if (err) {
+                console.error(err);
+            }
         })
 
         await Promise.all([deleteDir, deleteZip])
@@ -74,7 +76,9 @@ const deleteEverything = async (dirPath, zipPath) => {
 const deleteFile = async (path) => {
     await Promise.resolve().then(() => {
         fs.unlink(path, (err) => {
-            if (err) throw err;
+            if (err) {
+                console.error(err);
+            }    
         })
     }) 
     console.log(`Deleted`)

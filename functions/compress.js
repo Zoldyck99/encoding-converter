@@ -7,12 +7,16 @@ const {zip} = require('zip-a-folder');
  * @returns zip path
  */
 const compress = async (tempDir, SaveToDir) =>{
-    let zipName = tempDir.tempName+'.zip'
-    let zipPath = path.join(SaveToDir, zipName)
-    await zip(tempDir.tempPath, zipPath, {compression: 9})
-    console.log("Zipped");
-    
-    return zipPath;
+    try {
+        let zipName = tempDir.tempName+'.zip'
+        let zipPath = path.join(SaveToDir, zipName)
+        await zip(tempDir.tempPath, zipPath, {compression: 9})
+        console.log("Zipped");
+        
+        return zipPath;
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 module.exports = compress
