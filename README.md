@@ -1,7 +1,7 @@
 # encoding-converter
 Convert at once as many files encoding as you want.
 
-Can be used on a Single file - Many files - .zip file
+Can be used on a Single file - Multiple files - .zip file
 
 # Use it in this order:
 1- Specify the encodings
